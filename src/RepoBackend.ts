@@ -693,10 +693,8 @@ export class RepoBackend {
       }
       case 'MaterializeMsg': {
         const doc = this.docs.get(query.id)!
-        const changes = (doc.back as any)
-          .getIn(['opSet', 'history'])
+        const changes = Backend.getHistory(doc.back as any)
           .slice(0, query.history)
-          .toArray()
         const [, patch] = Backend.applyChanges(Backend.init(), changes)
         this.toFrontend.push({ type: 'Reply', id, payload: { type: 'MaterializeReplyMsg', patch } })
         break

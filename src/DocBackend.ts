@@ -3,6 +3,7 @@ import Queue from './Queue'
 import Debug from './Debug'
 import { Clock } from './Clock'
 import { ActorId, DocId, rootActorId } from './Misc'
+import automerge from 'automerge'
 
 const log = Debug('DocBackend')
 
@@ -58,7 +59,7 @@ export class DocBackend {
       this.ready.subscribe((f) => f())
       this.subscribeToRemoteChanges()
       this.subscribeToLocalChanges()
-      const history = (this.back as any).getIn(['opSet', 'history']).size
+      const history = automerge.getDefaultBackend().getHistory(this.back as any).length
       this.updateQ.push({
         type: 'ReadyMsg',
         doc: this,
@@ -107,7 +108,7 @@ export class DocBackend {
       this.ready.subscribe((f) => f())
       this.subscribeToLocalChanges()
       this.subscribeToRemoteChanges()
-      const history = (this.back as any).getIn(['opSet', 'history']).size
+      const history = Backend.getHistory(this.back as any).length
       this.updateQ.push({
         type: 'ReadyMsg',
         doc: this,
@@ -123,7 +124,7 @@ export class DocBackend {
         const [back, patch] = Backend.applyChanges(this.back!, changes)
         this.back = back
         this.updateClock(changes)
-        const history = (this.back as any).getIn(['opSet', 'history']).size
+        const history = Backend.getHistory(this.back as any).length
         this.updateQ.push({
           type: 'RemotePatchMsg',
           doc: this,
@@ -140,7 +141,7 @@ export class DocBackend {
         const [back, patch] = Backend.applyLocalChange(this.back!, change)
         this.back = back
         this.updateClock([change])
-        const history = (this.back as any).getIn(['opSet', 'history']).size
+        const history = Backend.getHistory(this.back as any).length
         this.updateQ.push({
           type: 'LocalPatchMsg',
           doc: this,
