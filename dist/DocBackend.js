@@ -45,7 +45,7 @@ class DocBackend {
                 this.ready.subscribe((f) => f());
                 this.subscribeToLocalChanges();
                 this.subscribeToRemoteChanges();
-                const history = this.back.getIn(['opSet', 'history']).size;
+                const history = automerge_1.Backend.getHistory(this.back).length;
                 this.updateQ.push({
                     type: 'ReadyMsg',
                     doc: this,
@@ -61,7 +61,7 @@ class DocBackend {
             this.ready.subscribe((f) => f());
             this.subscribeToRemoteChanges();
             this.subscribeToLocalChanges();
-            const history = this.back.getIn(['opSet', 'history']).size;
+            const history = automerge_1.Backend.getHistory(this.back).length;
             this.updateQ.push({
                 type: 'ReadyMsg',
                 doc: this,
@@ -82,7 +82,7 @@ class DocBackend {
                 const [back, patch] = automerge_1.Backend.applyChanges(this.back, changes);
                 this.back = back;
                 this.updateClock(changes);
-                const history = this.back.getIn(['opSet', 'history']).size;
+                const history = automerge_1.Backend.getHistory(this.back).length;
                 this.updateQ.push({
                     type: 'RemotePatchMsg',
                     doc: this,
@@ -98,7 +98,7 @@ class DocBackend {
                 const [back, patch] = automerge_1.Backend.applyLocalChange(this.back, change);
                 this.back = back;
                 this.updateClock([change]);
-                const history = this.back.getIn(['opSet', 'history']).size;
+                const history = automerge_1.Backend.getHistory(this.back).length;
                 this.updateQ.push({
                     type: 'LocalPatchMsg',
                     doc: this,

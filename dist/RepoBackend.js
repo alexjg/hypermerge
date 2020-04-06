@@ -430,10 +430,7 @@ class RepoBackend {
                 }
                 case 'MaterializeMsg': {
                     const doc = this.docs.get(query.id);
-                    const changes = doc.back
-                        .getIn(['opSet', 'history'])
-                        .slice(0, query.history)
-                        .toArray();
+                    const changes = doc.back && automerge_1.Backend.getHistory(doc.back).slice(0, query.history) || [];
                     const [, patch] = automerge_1.Backend.applyChanges(automerge_1.Backend.init(), changes);
                     this.toFrontend.push({ type: 'Reply', id, payload: { type: 'MaterializeReplyMsg', patch } });
                     break;
