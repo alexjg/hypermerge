@@ -37,7 +37,7 @@ class DocBackend {
             this.bench('init', () => {
                 //console.log("CHANGES MAX",changes[changes.length - 1])
                 //changes.forEach( (c,i) => console.log("CHANGES", i, c.actor, c.seq))
-                const [back, patch] = automerge_1.default.getDefaultBackend().applyChanges(automerge_1.default.getDefaultBackend().init(), changes);
+                const [back, patch] = automerge_1.default.Backend.applyChanges(automerge_1.default.Backend.init(), changes);
                 this.actorId = this.actorId || actorId;
                 this.back = back;
                 this.updateClock(changes);
@@ -45,7 +45,7 @@ class DocBackend {
                 this.ready.subscribe((f) => f());
                 this.subscribeToLocalChanges();
                 this.subscribeToRemoteChanges();
-                const history = automerge_1.default.getDefaultBackend().getHistory(this.back).length;
+                const history = automerge_1.default.Backend.getHistory(this.back).length;
                 this.updateQ.push({
                     type: 'ReadyMsg',
                     doc: this,
@@ -61,7 +61,7 @@ class DocBackend {
             this.ready.subscribe((f) => f());
             this.subscribeToRemoteChanges();
             this.subscribeToLocalChanges();
-            const history = automerge_1.default.getDefaultBackend().getHistory(this.back).length;
+            const history = automerge_1.default.Backend.getHistory(this.back).length;
             this.updateQ.push({
                 type: 'ReadyMsg',
                 doc: this,
@@ -79,10 +79,10 @@ class DocBackend {
     subscribeToRemoteChanges() {
         this.remoteChangesQ.subscribe((changes) => {
             this.bench('applyRemoteChanges', () => {
-                const [back, patch] = automerge_1.default.getDefaultBackend().applyChanges(this.back, changes);
+                const [back, patch] = automerge_1.default.Backend.applyChanges(this.back, changes);
                 this.back = back;
                 this.updateClock(changes);
-                const history = automerge_1.default.getDefaultBackend().getHistory(this.back).length;
+                const history = automerge_1.default.Backend.getHistory(this.back).length;
                 this.updateQ.push({
                     type: 'RemotePatchMsg',
                     doc: this,
@@ -95,10 +95,10 @@ class DocBackend {
     subscribeToLocalChanges() {
         this.localChangeQ.subscribe((change) => {
             this.bench(`applyLocalChange seq=${change.seq}`, () => {
-                const [back, patch] = automerge_1.default.getDefaultBackend().applyLocalChange(this.back, change);
+                const [back, patch] = automerge_1.default.Backend.applyLocalChange(this.back, change);
                 this.back = back;
                 this.updateClock([change]);
-                const history = automerge_1.default.getDefaultBackend().getHistory(this.back).length;
+                const history = automerge_1.default.Backend.getHistory(this.back).length;
                 this.updateQ.push({
                     type: 'LocalPatchMsg',
                     doc: this,

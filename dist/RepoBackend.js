@@ -430,9 +430,9 @@ class RepoBackend {
                 }
                 case 'MaterializeMsg': {
                     const doc = this.docs.get(query.id);
-                    const changes = automerge_1.default.getDefaultBackend().getHistory(doc.back)
+                    const changes = automerge_1.default.Backend.getHistory(doc.back)
                         .slice(0, query.history);
-                    const [, patch] = automerge_1.default.getDefaultBackend().applyChanges(automerge_1.default.getDefaultBackend().init(), changes);
+                    const [, patch] = automerge_1.default.Backend.applyChanges(automerge_1.default.Backend.init(), changes);
                     this.toFrontend.push({ type: 'Reply', id, payload: { type: 'MaterializeReplyMsg', patch } });
                     break;
                 }
@@ -542,7 +542,7 @@ class RepoBackend {
     create(keys) {
         const docId = Misc_1.encodeDocId(keys.publicKey);
         log('create', docId);
-        const doc = new DocBackend.DocBackend(docId, automerge_1.default.getDefaultBackend().init());
+        const doc = new DocBackend.DocBackend(docId, automerge_1.default.Backend.init());
         doc.updateQ.subscribe(this.documentNotify);
         // HACK: We set a clock value of zero so we have a clock in the clock store
         // TODO: This isn't right.
