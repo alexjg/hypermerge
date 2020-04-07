@@ -14,7 +14,8 @@ import {
   BoxReplyMsg,
   OpenBoxReplyMsg,
 } from './RepoMsg'
-import { Backend, Change } from 'automerge'
+import { Change } from 'automerge'
+import automerge from "automerge"
 import * as DocBackend from './DocBackend'
 import path from 'path'
 import fs from 'fs'
@@ -145,7 +146,7 @@ export class RepoBackend {
   private create(keys: Keys.KeyBuffer): DocBackend.DocBackend {
     const docId = encodeDocId(keys.publicKey)
     log('create', docId)
-    const doc = new DocBackend.DocBackend(docId, Backend.init())
+    const doc = new DocBackend.DocBackend(docId, automerge.getDefaultBackend().init())
     doc.updateQ.subscribe(this.documentNotify)
     // HACK: We set a clock value of zero so we have a clock in the clock store
     // TODO: This isn't right.
@@ -693,9 +694,9 @@ export class RepoBackend {
       }
       case 'MaterializeMsg': {
         const doc = this.docs.get(query.id)!
-        const changes = Backend.getHistory(doc.back as any)
+        const changes = automerge.getDefaultBackend().getHistory(doc.back as any)
           .slice(0, query.history)
-        const [, patch] = Backend.applyChanges(Backend.init(), changes)
+        const [, patch] = automerge.getDefaultBackend().applyChanges(automerge.getDefaultBackend().init(), changes)
         this.toFrontend.push({ type: 'Reply', id, payload: { type: 'MaterializeReplyMsg', patch } })
         break
       }

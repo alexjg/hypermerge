@@ -24,7 +24,7 @@ const Queue_1 = __importDefault(require("./Queue"));
 const Metadata_1 = require("./Metadata");
 const Actor_1 = require("./Actor");
 const Clock = __importStar(require("./Clock"));
-const automerge_1 = require("automerge");
+const automerge_1 = __importDefault(require("automerge"));
 const DocBackend = __importStar(require("./DocBackend"));
 const path_1 = __importDefault(require("path"));
 const fs_1 = __importDefault(require("fs"));
@@ -430,11 +430,9 @@ class RepoBackend {
                 }
                 case 'MaterializeMsg': {
                     const doc = this.docs.get(query.id);
-                    const changes = doc.back
-                        .getIn(['opSet', 'history'])
-                        .slice(0, query.history)
-                        .toArray();
-                    const [, patch] = automerge_1.Backend.applyChanges(automerge_1.Backend.init(), changes);
+                    const changes = automerge_1.default.getDefaultBackend().getHistory(doc.back)
+                        .slice(0, query.history);
+                    const [, patch] = automerge_1.default.getDefaultBackend().applyChanges(automerge_1.default.getDefaultBackend().init(), changes);
                     this.toFrontend.push({ type: 'Reply', id, payload: { type: 'MaterializeReplyMsg', patch } });
                     break;
                 }
@@ -544,7 +542,7 @@ class RepoBackend {
     create(keys) {
         const docId = Misc_1.encodeDocId(keys.publicKey);
         log('create', docId);
-        const doc = new DocBackend.DocBackend(docId, automerge_1.Backend.init());
+        const doc = new DocBackend.DocBackend(docId, automerge_1.default.getDefaultBackend().init());
         doc.updateQ.subscribe(this.documentNotify);
         // HACK: We set a clock value of zero so we have a clock in the clock store
         // TODO: This isn't right.

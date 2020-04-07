@@ -28,7 +28,8 @@
   },
   "homepage": "https://github.com/inkandswitch/hypermerge#readme",
   "dependencies": {
-    "automerge": "github:automerge/automerge#opaque-strings",
+    "automerge": "file:/home/alex/Projects/open-source/automerge",
+    "automerge-wasm-backend": "file:/home/alex/Projects/automerge-stuff/automerge-rs/automerge-backend-wasm",
     "better-sqlite3": "^5.4.3",
     "bs58": "^4.0.1",
     "copyfiles": "^2.1.1",

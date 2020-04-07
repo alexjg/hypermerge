@@ -7,6 +7,8 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+var automerge_1 = require("automerge");
+exports.setDefaultBackend = automerge_1.setDefaultBackend;
 var Repo_1 = require("./Repo");
 exports.Repo = Repo_1.Repo;
 var Handle_1 = require("./Handle");
